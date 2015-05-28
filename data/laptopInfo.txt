@@ -1,4 +1,4 @@
-"laptop"	"scriptVers"	"subno"
+"laptop"	"scriptVers"	"Subject"
 "heavy"	"Scherer_2015_BG"	"1"
 "heavy"	"Scherer_2015_BG"	"8"
 "heavy"	"Scherer_2015_BG_win8_brief"	"39"
@@ -38,7 +38,6 @@
 "small"	"Scherer_2015_BG_win8_brief"	"47"
 "small"	"Scherer_2015_BG_win8_brief"	"50"
 "small"	"Scherer_2015_BG_win8_brief"	"51"
-"small"	"Scherer_2015_GT"	"1"
 "small"	"Scherer_2015_GT_win8_brief"	"44"
 "small"	"Scherer_2015_GT_win8_brief"	"52"
 "personal"	"Scherer_2015_BG_win8_brief"	"45"
