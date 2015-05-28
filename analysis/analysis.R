@@ -122,6 +122,8 @@ model3 =
 Anova(model3, type=3)
 fixef(model3)
 
+# Well what's our damn sample size like?
+datACC  %>% distinct(Subject, Condition)  %$% table(Condition) # not great!
 
 # Aggregate data for plotting
 # Consider that some TrialTypes appear in both conditions 
