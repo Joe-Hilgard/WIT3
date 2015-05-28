@@ -35,6 +35,8 @@ dat = dat %>%
   ) %>%
   # Discard practice rows and breaktime rows  
   filter(Block == "RunProc", TrialType != "NULL") %>%
+  # Discard African-American subjects per preregistration
+  filter(Race != 2) %>%
   # Convert ACC and RT back to numeric
   mutate("Probe.ACC" = as.numeric(Probe.ACC), "Probe.RT" = as.numeric(Probe.RT)) %>%
   # Convert Subject number to factor
