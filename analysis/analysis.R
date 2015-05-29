@@ -43,8 +43,8 @@ dat = dat %>%
   mutate("Subject" = as.factor(Subject)) %>%
   # Add simpler codes for Cue and Probe
   mutate("CueClass" = substr(CueType, 1, 5),
-         "ProbeClass" = substr(ProbeType, 1, 4)
-  )
+         "ProbeClass" = substr(ProbeType, 1, 4)) %>%
+  mutate("Probe" = ifelse(ProbeClass %in% c("Blac", "TOOL"), "Other", "Gun"))
 
 # Check trial counts
 table(dat$Subject, dat$TrialType)
@@ -97,22 +97,23 @@ badSubs = meanAccTable %>%
 # analysis
 datACC = dat %>%
   filter(feedbackmask == "fast") %>%
-  filter(!(Subject %in% badSubs$Subject)) %>%
-  mutate("Probe" = ifelse(ProbeClass %in% c("Blac", "TOOL"), "NotGun", "Gun"))
+  filter(!(Subject %in% badSubs$Subject)) 
 
 model1 = glmer(Probe.ACC ~ Condition * CueClass * Probe + (1|Subject), 
                family = "binomial",
                data=datACC)
 Anova(model1, type=3)
 
+# Well, do we replicate standard WIT effect?
 model2 = 
 datACC %>%
-  filter(CueClass == "Black") %>%
-  glmer(Probe.ACC ~ Condition * ProbeClass + (1|Subject),
+  filter(Condition == "GunTool") %>%
+  glmer(Probe.ACC ~ CueClass * Probe + (1|Subject),
        family = "binomial",
        data = .)
 Anova(model2, type=3)
 
+# Restrict analysis to just gun trials per prereg
 model3 = 
   datACC %>%
   filter(ProbeClass == "WEAP") %>%
@@ -137,7 +138,7 @@ plotDatRT = dat %>%
 plotDatACC = dat %>%
   filter(feedbackmask == "fast") %>%
   filter(!(Subject %in% badSubs$Subject)) %>%
-  group_by(Condition, Subject, TrialType) %>%
+  group_by(Condition, Subject, TrialType, Probe, CueClass) %>%
   summarize("meanACC" = mean(Probe.ACC),
             "count" = n())
 
@@ -145,14 +146,14 @@ plotDatACC = dat %>%
 ggplot(plotDatACC, aes(x=meanACC)) +
   geom_histogram()
 
-ggplot(plotDatACC, aes(x=TrialType, y=meanACC)) +
+ggplot(plotDatACC, aes(x=interaction(CueClass, Probe), y=meanACC)) +
   geom_point() +
   facet_wrap(~Condition)
 
 plotDatACC %>%
-  group_by(Condition, TrialType) %>%
+  group_by(Condition, Probe, CueClass) %>%
   summarize("meanACC" = mean(meanACC)) %>%
-  ggplot(., aes(x=TrialType, y=meanACC)) +
+  ggplot(., aes(x=interaction(CueClass, Probe), y=meanACC)) +
   geom_bar(stat="identity") +
   facet_wrap(~Condition)
 
